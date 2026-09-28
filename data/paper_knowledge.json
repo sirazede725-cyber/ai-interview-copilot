@@ -1,0 +1,56 @@
+{
+  "topics": [
+    {
+      "id": "paper-dyntrust-overview",
+      "title": "DynTrust：区块链节点隐蔽攻击检测",
+      "domain": "论文知识",
+      "relationship": "coauthor_research",
+      "source": "DynTrust.pdf",
+      "keywords": ["DynTrust", "区块链", "隐蔽攻击", "异常检测", "信任趋势", "EWMA", "HGB", "速度", "加速度"],
+      "short_answer": "DynTrust把节点信任建模为随时间变化的轨迹，用信任值、速度和加速度识别渐进退化、低频恶意与伪装恢复等静态指标难以发现的攻击。",
+      "key_points": ["输入包含交互成功率、失败率、违规频率和行为连续性等多模态行为信号", "先用EWMA平滑短期噪声，再用滑动窗口OLS斜率估计信任速度与加速度", "将原始行为、信任状态和窗口统计组成19维特征，交给HGB完成多分类检测", "50节点仿真中准确率为0.9760±0.0022，macro-F1为0.9745±0.0036"],
+      "deep_dive": ["创新点不是单独发明EWMA或回归，而是把它们组织为可解释的二阶信任轨迹建模框架", "相比LSTM、GRU等隐状态方法，显式速度和加速度更容易解释节点信任为何发生变化", "消融与偏差控制表明性能不只来自被直接扰动的成功率和违规频率，运动学汇总特征是关键", "当前证据主要来自高保真模拟器，真实主网、跨链泛化、概念漂移和生产级开销仍需验证"],
+      "followups": ["为什么用EWMA和OLS而不是直接做差？", "信任速度和加速度分别代表什么？", "为什么最终选择HGB而不是LSTM？"],
+      "boundary": "论文作者列表包含本人，可按共同作者和参与研究表述；论文曾录用后优化改投，不能说已正式发表；实验基于模拟环境，不能说已在真实主网上线。"
+    },
+    {
+      "id": "paper-dyntrust-experiment",
+      "title": "DynTrust：实验、可解释性与局限",
+      "domain": "论文知识",
+      "relationship": "coauthor_research",
+      "source": "DynTrust.pdf",
+      "keywords": ["DynTrust实验", "macro-F1", "SHAP", "消融", "鲁棒性", "混淆矩阵", "gas", "局限"],
+      "short_answer": "DynTrust通过基线比较、消融、偏差控制、跨扰动和SHAP分析验证性能与可解释性，但结论仍受仿真数据和特征工程范式限制。",
+      "key_points": ["默认19维协议下准确率0.9760±0.0022、macro-F1 0.9745±0.0036", "对伪装型和低频攻击的高召回支持了趋势导数优于瞬时信任值的判断", "SHAP显示行为连续性、违规波动、最小信任值和成功率变化是重要特征", "模拟gas成本约比LSTM方案低2.97倍，但这只说明工程可行性，不等同真实链上成本"],
+      "deep_dive": ["偏差控制移除成功率和违规频率后macro-F1未下降，减弱了模型只利用注入变量捷径的质疑", "跨扰动实验暴露出攻击强度和噪声分布变化时的泛化压力", "未来方向包括真实主网验证、鲁棒校准、自适应窗口和图时序模型融合"],
+      "followups": ["如何证明模型没有学习模拟器捷径？", "SHAP结果应该怎么解释？", "这篇论文最大的局限是什么？"],
+      "boundary": "引用数字时要说明是论文仿真实验结果；不要转述为商业系统线上收益或真实链上性能。"
+    },
+    {
+      "id": "paper-bf4hg-overview",
+      "title": "BF4Hg：异构区块链联邦学习的原型对比学习",
+      "domain": "论文知识",
+      "relationship": "coauthor_research",
+      "source": "Prototype_Contrastive_Learning_for_Heterogeneous_Blockchain_Federated_Learning.pdf",
+      "keywords": ["BF4Hg", "联邦学习", "区块链联邦学习", "原型对比学习", "异构", "non-IID", "难负样本", "prototype"],
+      "short_answer": "BF4Hg针对非IID客户端的数据量不均、标签分布偏移和细粒度类别混淆，用加权原型对比学习促进跨客户端语义共享。",
+      "key_points": ["语义加权对比损失根据原型关系调节负样本排斥强度", "少数类原型收缩把小样本产生的不稳定本地原型拉向历史全局原型", "类内去坍缩用温和排斥保留同类样本内部的有效差异", "基于间隔的难负样本损失强化相似类别之间的细粒度区分"],
+      "deep_dive": ["区块链主要承担去中心化协调、可审计记录和协议执行，学习改进来自表示层方法", "工程上不宜把完整模型和原型直接上链，更适合链下交换、链上记录哈希、签名、轮次和聚合承诺", "Hard Negative不是任意错误样本，而是语义相近、容易混淆且位于决策边界附近的负样本"],
+      "followups": ["四个模块分别解决什么问题？", "原型收缩为什么适合少数类？", "区块链在这个框架里到底做什么？"],
+      "boundary": "论文作者列表包含本人，当前状态是在投；可以讲方法和实验，不得说已发表、已部署到真实区块链或有大规模客户端生产验证。"
+    },
+    {
+      "id": "paper-bf4hg-experiment",
+      "title": "BF4Hg：实验结果与消融分析",
+      "domain": "论文知识",
+      "relationship": "coauthor_research",
+      "source": "Prototype_Contrastive_Learning_for_Heterogeneous_Blockchain_Federated_Learning.pdf",
+      "keywords": ["BF4Hg实验", "EMNIST", "CUB-200", "Stanford Dogs", "FGVC Aircraft", "消融", "敏感性", "Dirichlet"],
+      "short_answer": "BF4Hg在四个基准数据集、10与20客户端的强异构设置中取得8组中的6组最佳结果，消融实验显示三个正则模块具有互补作用。",
+      "key_points": ["数据集为EMNIST、CUB-200、Stanford Dogs和FGVC Aircraft，非IID参数β=0.01", "对比FedProto、FedSA、FedProc、FedGLCL和FAIR-BFL，在8种设置中6种表现最佳", "完整消融相对基础配置在四个数据集上分别提升0.21%、1.48%、1.71%和4.08%", "实验采用模拟区块链协调，关注学习层异构性，不代表真实链的吞吐和时延"],
+      "deep_dive": ["细粒度数据集类别相似且单类样本有限，更能检验原型稳定性和难负样本区分能力", "参数敏感性说明中等正则强度较稳定，过强对比损失会压过主任务损失", "局限包括缺少大规模跨设备参与、真实许可链部署、形式化收敛保证和共享原型隐私保护"],
+      "followups": ["为什么用Dirichlet分布构造非IID数据？", "消融实验说明了什么？", "实验为什么不能证明生产可用？"],
+      "boundary": "实验指标必须和数据集、客户端规模、模拟设置一起说明；不能把分类准确率包装为线上业务指标。"
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="基于个人事实、项目经验与AI知识库的通用面试助手">
+  <title>AI面试助手</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230a0f18'/%3E%3Cpath d='M18 19h28v21H31l-9 7v-7h-4z' fill='none' stroke='%235ee0aa' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M25 28h14M25 34h9' stroke='%23e9f0f8' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/voice.css">
+</head>
+<body class="interview-mode">
+<div class="shell">
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">答</span><strong>AI面试助手</strong></div>
+    <nav class="view-switch" aria-label="页面模式">
+      <button class="view-option active" data-view="interview">面试模式</button>
+      <button class="view-option" data-view="prepare">备战模式</button>
+    </nav>
+    <div class="top-actions"><span id="modeBadge" class="status-badge">未连接模型</span><button id="settingsBtn" class="icon-button" aria-label="模型设置">设置</button></div>
+  </header>
+
+  <main id="interviewView" class="interview-view">
+    <section class="question-box">
+      <div class="question-label-row"><label for="questionInput">面试官问题</label><span id="speechSupport" class="speech-support">正在检查语音能力</span></div>
+      <div class="question-row"><textarea id="questionInput" maxlength="2000" rows="3" placeholder="输入或粘贴面试问题"></textarea><button id="generateBtn" class="primary-button"><span>生成回答</span><small>Ctrl ↵</small></button></div>
+      <div class="voice-row"><button id="listenBtn" class="listen-button" type="button"><span class="mic-dot"></span><span id="listenText">监听问题</span></button><span id="voiceStatus" class="voice-status">点击后监听一轮问题，停顿约1.3秒自动生成</span><label class="auto-answer"><input id="autoAnswer" type="checkbox" checked>停顿后自动回答</label></div>
+      <p id="interimText" class="interim-text hidden"></p>
+    </section>
+
+    <section class="answer-box" aria-live="polite">
+      <div id="emptyState" class="empty-state"><p>输入问题后，这里只显示可直接口述的回答和可能追问。</p></div>
+      <div id="loadingState" class="loading-state hidden"><span></span><span></span><span></span><p>正在理解问题并检索相关资料</p></div>
+      <article id="answerContent" class="answer-content hidden">
+        <div class="answer-head"><div><span id="categoryLabel" class="category-label"></span><span id="sourceMode" class="source-mode"></span></div><div class="answer-actions"><button id="shortBtn">缩短</button><button id="copyBtn">复制</button><button id="regenerateBtn">重答</button></div></div>
+        <p id="answerText" class="answer-text"></p>
+        <div class="followup-section"><h2>可能追问</h2><div id="followupList" class="followup-list"></div></div>
+        <p id="warningText" class="warning-text hidden"></p>
+      </article>
+    </section>
+    <footer class="interview-footer"><span>语音模式默认一问一停，避免把你的回答再次识别成问题</span><span id="historyCount">本次 0 题</span></footer>
+  </main>
+
+  <main id="prepareView" class="prepare-view hidden">
+    <section class="prepare-intro"><div><p class="eyebrow">备战与测试</p><h1>知识库</h1><p>个人事实、项目深挖、岗位技术、AI前沿与论文资料分层管理。点击任意主题可检查内容或直接测试。</p><p id="activeJobLabel" class="source-mode">正在加载目标岗位…</p></div><div class="stats"><div><strong id="factCount">0</strong><span>个人事实</span></div><div><strong id="topicCount">0</strong><span>知识主题</span></div><div><strong id="paperCount">0</strong><span>论文卡片</span></div><div><strong id="boundaryCount">0</strong><span>事实边界</span></div></div></section>
+    <section class="prepare-grid">
+      <div class="library-panel">
+        <div class="library-tools"><input id="topicSearch" type="search" placeholder="搜索项目、Agent、RAG、Python…"><div id="topicFilters" class="filter-row"></div></div>
+        <div id="topicList" class="topic-list"></div>
+      </div>
+      <aside class="detail-panel">
+        <span id="detailDomain" class="category-label">选择主题</span>
+        <h2 id="detailTitle">从左侧选择一项资料</h2>
+        <p id="detailAnswer" class="detail-answer">这里用于备战、检查知识库内容和测试模型回答。</p>
+        <div id="detailContent" class="hidden"><h3>关键要点</h3><ul id="detailPoints"></ul><h3>深挖理解</h3><ul id="detailDeep"></ul><h3>表达边界</h3><p id="detailBoundary" class="boundary-box"></p><button id="testTopicBtn" class="primary-button test-button">用这个主题测试</button></div>
+      </aside>
+    </section>
+  </main>
+</div>
+
+<dialog id="settingsDialog">
+  <form method="dialog" class="settings-card">
+    <div class="dialog-head"><div><p class="eyebrow">OpenAI兼容接口</p><h2>模型设置</h2></div><button class="close-button" value="cancel" aria-label="关闭">×</button></div>
+    <label>API Base<input id="apiBase" placeholder="https://api.example.com/v1"></label>
+    <label>模型名称<input id="modelName" placeholder="model-name"></label>
+    <label>API Key<input id="apiKey" type="password" placeholder="仅保存在当前标签页"></label>
+    <p class="privacy-note">当前可直接使用后端配置的模型。这里填写的内容只用于临时覆盖后端设置，并保存在当前浏览器标签页。</p>
+    <div class="dialog-actions"><button id="clearConfigBtn" class="secondary-button" type="button">清除</button><button id="saveConfigBtn" class="primary-button" type="button">保存</button></div>
+  </form>
+</dialog>
+<script src="/app.js"></script>
+</body>
+</html>
